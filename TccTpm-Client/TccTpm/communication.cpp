@@ -36,4 +36,5 @@ void communicationSendQuoteForAttestation() {
 	std::string jsonQuoteToSend = JsonSendQuote(tpmdata.quoteForServer, tpmdata.encodedPCRS, tpmdata.encodedSignatureQuote);
 	std::cout << "\nQuote e pcrs encodados que vão para o servidor: " + jsonQuoteToSend << std::endl;
 	std::string responseQuoteFromServer = makeRequest(ProcessPhase::RESULT_ATTESTATION, jsonQuoteToSend, false);
+	std::cout << responseQuoteFromServer << std::endl;
 }

@@ -73,6 +73,11 @@ namespace TccTpm {
 	
 		std::vector<TpmCpp::TPMS_PCR_SELECTION>digestFromPcrs{ TpmCpp::TPMS_PCR_SELECTION(TpmCpp::TPM_ALG_ID::SHA256, pcrsToMakeQuote) };
 		tpmdata.readingDigestFromPcrs = tpmdata.tpm.PCR_Read(digestFromPcrs);
+		//pegando o digest de todos os PCR's
+		TpmCpp::ByteVec tempVec;
+		for (int i = 0; i < tpmdata.readingDigestFromPcrs.pcrValues.size(); i++) {
+			tempVec.insert(tempVec.end(), tpmdata.readingDigestFromPcrs.pcrValues[i].buffer.begin(), tpmdata.readingDigestFromPcrs.pcrValues[i].buffer.end());
+		}
 		
 		std::cout << "Digest dos pcr's: \n" << tpmdata.readingDigestFromPcrs.ToString() << std::endl;
 		tpmdata.quote = tpmdata.tpm._AllowErrors().Quote(tpmdata.akhandle, Nonce, TpmCpp::TPMS_NULL_SIG_SCHEME(), digestFromPcrs);
@@ -84,11 +89,18 @@ namespace TccTpm {
 		std::cout << tpmdata.quote.ToString() << std::endl;
 		std::cout << "Sucesso ao criar Quote!" << std::endl;
 		std::shared_ptr<TpmCpp::TPMU_SIGNATURE> sharedPointerQuoteSignature = tpmdata.quote.signature;
-		TpmCpp::ByteVec quoteSignaturebytes = toByteVec(sharedPointerQuoteSignature, 4);
+		TpmCpp::ByteVec quoteSignaturebytes = tpmdata.quote.signature->toBytes();
+		/*for (int i = 0; i < quoteSignaturebytes.size(); i++)
+		{
+			std::cout << quoteSignaturebytes[i];
+		}*/
+		TpmCpp::ByteVec tempBytevec;
+		tempBytevec.reserve((quoteSignaturebytes.size() - 4));
+		tempBytevec.insert(tempBytevec.begin(), quoteSignaturebytes.begin() + 4, quoteSignaturebytes.end());
 		/*tpmdata.quote.signature.;*/
 		/*auto teste = tpmdata.quote.signature;*/
-		encodedSignatureQuote = base64Encode(quoteSignaturebytes,true);
+		encodedSignatureQuote = base64Encode(tempBytevec,true);
 		encodedQuoteForServer = base64Encode(tpmdata.quote.quoted.toBytes(), true);
-		encodedPcrs = base64Encode(tpmdata.readingDigestFromPcrs.toBytes(), true);
+		encodedPcrs = base64Encode(tempVec, true);
 	}
 }

@@ -3,9 +3,14 @@ package controllers
 import (
 	"TccTpm/flows"
 	"TccTpm/structs"
+	"TccTpm/tools"
+	"bytes"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/google/go-tpm/legacy/tpm2"
 )
 
 func InitialCommunication(w http.ResponseWriter, r *http.Request) {
@@ -68,10 +73,32 @@ func VerifyingQuote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// fmt.Println(">>> teste: ", quote)
-	fmt.Printf(">>>Quote enviado pelo cliente : %x\n", quote.Quote)
-	fmt.Printf(">>>Assinatura do quote : %x\n", quote.QuoteSignature)
-	fmt.Printf(">>>Pcrs enviados pelo cliente : %x\n", quote.PcrsFromClient)
-	
+	fmt.Printf(">>>Quote enviado pelo cliente : %x\n\n", quote.Quote)
+	fmt.Printf(">>>Assinatura do quote : %x\n\n", quote.QuoteSignature)
+	fmt.Printf(">>>Pcrs enviados pelo cliente : %x\n\n", quote.PcrsFromClient)
+	//devolvendo o quote
+	attestationData, _ := tpm2.DecodeAttestationData(quote.Quote)
+	//verificar Nonce
+	if !flows.NonceCheck(attestationData.ExtraData) {
+		http.Error(w, "\n>>>Falha ao verificar o freshNonce do quote.", http.StatusUnauthorized)
+		return
+	}
+
 	//verificar os pcrs
+	Hashed := sha256.New()
+	Hashed.Write(quote.PcrsFromClient)
+	HashedDigest := Hashed.Sum(nil)
+	fmt.Printf(">>>Hashed digest:%x \n\n", HashedDigest)
+	if !bytes.Equal(HashedDigest, attestationData.AttestedQuoteInfo.PCRDigest) {
+		http.Error(w, "\n>>>Falha ao verificar o digest dos Pcr's", http.StatusUnauthorized)
+		return
+	}
+
 	//verificar a assinatura do quote
+	if err := tools.CheckSignature(flows.DatafromTpm.AKPublicArea, quote.Quote, quote.QuoteSignature); err != nil {
+		http.Error(w, "\n>>>Falha ao verificar a Assinatura do quote", http.StatusUnauthorized)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode("Deu bom!")
 }

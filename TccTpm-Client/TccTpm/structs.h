@@ -22,5 +22,4 @@ struct TpmData {
     std::vector<UINT32> pcrsToMakeQuote;
     TpmCpp::QuoteResponse quote;
     TpmCpp::PCR_ReadResponse readingDigestFromPcrs;
-    /*std::shared_ptr <TpmCpp::TPMU_SIGNATURE> signatureQuote;*/
 };

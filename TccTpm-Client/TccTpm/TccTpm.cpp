@@ -58,6 +58,7 @@ int main()
 	TccTpm::processQuote(tpmdata.pcrsToMakeQuote, freshNonce, tpmdata.quoteForServer, tpmdata.encodedPCRS, tpmdata.encodedSignatureQuote);
 	communicationSendQuoteForAttestation();
 
+
 	ShutDownTpm();
 }
 

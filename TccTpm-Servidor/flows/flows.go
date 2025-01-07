@@ -28,6 +28,7 @@ func InitialChallenge(data structs.RequestData) (ec structs.ChallengeResponse, e
 	//loading AK
 	akBytes := data.AkPublic
 	ak, err := tpm2.DecodePublic(akBytes)
+	DatafromTpm.AKPublicArea = ak
 	DatafromTpm.AK, _ = ak.Key()
 	fmt.Println(">>>AK: ", DatafromTpm.AK)
 	if err != nil {
@@ -51,9 +52,9 @@ func InitialChallenge(data structs.RequestData) (ec structs.ChallengeResponse, e
 		return structs.ChallengeResponse{}, err
 	}
 	DatafromTpm.Secret = nonce
-	fmt.Printf("\n\n>>>Credential: %x\n", ec.Credential)
-	fmt.Printf("\n>>>Secret: %x\n", ec.EncryptedSecret)
-	fmt.Printf("\n>>>Nonce para o cliente: %x\n", nonce)
+	fmt.Printf("\n\n>>>Credential: %x\n\n", ec.Credential)
+	fmt.Printf("\n>>>Secret: %x\n\n", ec.EncryptedSecret)
+	fmt.Printf("\n>>>Nonce para o cliente: %x\n\n", nonce)
 
 	return ec, err
 
@@ -63,6 +64,9 @@ func InitialChallenge(data structs.RequestData) (ec structs.ChallengeResponse, e
 func SecretCheck(nonce []byte) bool {
 	return bytes.Equal(nonce, DatafromTpm.Secret)
 }
+func NonceCheck(nonce []byte) bool {
+	return bytes.Equal(nonce, DatafromTpm.FreshNonceForQuote)
+}
 
 // criando nonce para atestação com quote
 func Attestation() (response structs.Attest, err error) {
@@ -70,6 +74,7 @@ func Attestation() (response structs.Attest, err error) {
 	rnd := rand.Reader
 	io.ReadFull(rnd, newNonce)
 	response.NonceForAttestation = newNonce
+	DatafromTpm.FreshNonceForQuote = newNonce
 	return response, nil
 }
 
@@ -78,5 +83,5 @@ func VerifyPcrs(pcrsByte []byte) {
 	// if err == nil {
 	// 	return
 	// }
-	
+
 }

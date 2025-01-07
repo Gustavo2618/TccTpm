@@ -1,6 +1,10 @@
 package structs
 
-import "crypto"
+import (
+	"crypto"
+
+	"github.com/google/go-tpm/legacy/tpm2"
+)
 
 type ProofOfPossetion struct {
 	Data RequestData `json:"ProofOfPossetion"`
@@ -21,9 +25,11 @@ type CheckSecret struct {
 }
 
 type DataFromTpm struct {
-	Secret []byte
-	EK     crypto.PublicKey
-	AK     crypto.PublicKey
+	Secret             []byte
+	EK                 crypto.PublicKey
+	AK                 crypto.PublicKey
+	FreshNonceForQuote []byte
+	AKPublicArea       tpm2.Public
 }
 
 type Attest struct {
