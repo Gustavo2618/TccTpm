@@ -52,9 +52,9 @@ func InitialChallenge(data structs.RequestData) (ec structs.ChallengeResponse, e
 		return structs.ChallengeResponse{}, err
 	}
 	DatafromTpm.Secret = nonce
-	fmt.Printf("\n\n>>>Credenciais: %x\n\n", ec.Credential)
-	fmt.Printf("\n>>>Segredo: %x\n\n", ec.EncryptedSecret)
-	fmt.Printf("\n>>>Nonce para o cliente: %x\n\n", nonce)
+	fmt.Printf("\n>>>Credenciais: %x\n", ec.Credential)
+	fmt.Printf("\n>>>Segredo: %x\n", ec.EncryptedSecret)
+	fmt.Printf("\n>>>Nonce para realizar o challenge do cliente: %x\n\n", nonce)
 
 	return ec, err
 }
@@ -77,10 +77,3 @@ func Attestation() (response structs.Attest, err error) {
 	return response, nil
 }
 
-func VerifyPcrs(pcrsByte []byte) {
-	// pcrs, err := tpm2.ReadPCRs(pcrsByte)
-	// if err == nil {
-	// 	return
-	// }
-
-}

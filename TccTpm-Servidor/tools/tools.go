@@ -31,3 +31,22 @@ func CheckSignature(pub tpm2.Public, attestData []byte, signature []byte) error 
 
 	return rsa.VerifyPKCS1v15(key, hash, hashed, signature)
 }
+func CheckSignatureQuote(pub tpm2.Public, attestData []byte, signature []byte) error {
+	pubKey, err := pub.Key()
+	if err != nil {
+		return err
+	}
+
+	key, _ := pubKey.(*rsa.PublicKey)
+	sigScheme := pub.RSAParameters.Sign
+	hash, err := sigScheme.Hash.Hash()
+
+	if err != nil {
+		return err
+	}
+
+	h := hash.New()
+	h.Write(attestData)
+	hashed := h.Sum(nil)
+	return rsa.VerifyPKCS1v15(key, hash, hashed, signature)
+}

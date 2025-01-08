@@ -39,7 +39,7 @@ func VerifyCertify(ek crypto.PublicKey, ak tpm2.Public, certifydata []byte, cert
 	if err := tools.CheckSignature(ak, certifydata, certifySignature); err != nil {
 		return nil, structs.ChallengeResponse{}, fmt.Errorf("\n>>>Erro ao verificar assinatura do certify")
 	}
-	fmt.Println(">>>Assinatura verificada...")
+	fmt.Println("\n>>>Assinatura verificada...")
 
 	hash := sha256.New()
 	rnd := rand.Reader
