@@ -34,13 +34,6 @@ void ShutDownTpm()
 	tpmdata.tpm.Shutdown(TpmCpp::TPM_SU::CLEAR);
 	tpmdata.tcpDevice.PowerOff();
 }
-std::string trimPublicKey(std::string pemFormatKey)
-{
-	pemFormatKey.erase(std::remove(pemFormatKey.begin(), pemFormatKey.end(), '\n'), pemFormatKey.cend());
-	size_t headFormat = strlen("-----BEGIN PUBLIC KEY-----");
-	size_t footFormat = strlen("-----END PUBLIC KEY-----");
-	return pemFormatKey.substr(headFormat, pemFormatKey.size() - (headFormat + footFormat));
-}
 TpmCpp::ByteVec toByteVec(const std::shared_ptr<TpmCpp::TPMU_SIGNATURE>& ptr, size_t skipBytes) {
 	// Tamanho total do objeto apontado
 	size_t totalSize = sizeof(TpmCpp::TPMU_SIGNATURE);
@@ -60,4 +53,10 @@ TpmCpp::ByteVec toByteVec(const std::shared_ptr<TpmCpp::TPMU_SIGNATURE>& ptr, si
 	std::memcpy(byteVec.data(), reinterpret_cast<const uint8_t*>(ptr.get()) + skipBytes, dataSize);
 
 	return byteVec;
+}
+void printBytesHex(TpmCpp::ByteVec vec) {
+	for (size_t i = 0; i < vec.size(); ++i) {
+		printf("%02x ",vec[i]);
+	}
+	printf("\n\n");
 }

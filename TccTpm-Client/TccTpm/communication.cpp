@@ -6,6 +6,7 @@
 
 extern TpmData tpmdata;
 std::string communicationProofOfPossetion() {
+	std::cout << "\n>>>Dados da prova de posse encodados para enviar ao servidor: " << std::endl;
 	std::string certifySignature = base64Encode(tpmdata.rawDataSignature, true);
 	std::string proofOfPossetion = JsonSendProofOfPossetion(tpmdata.ekpubContent, tpmdata.akpubContent, tpmdata.certifyInfo, certifySignature);
 	std::cout << "\n" + proofOfPossetion << std::endl;

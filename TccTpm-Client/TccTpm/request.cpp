@@ -33,7 +33,6 @@ std::string makeRequest(ProcessPhase phase, std::string data, bool verbose = fal
 		std::ostringstream httpResponse;
 		httpRequest.setOpt(new curlpp::options::WriteStream(&httpResponse));
 		httpRequest.setOpt(new curlpp::options::Url(getProcessPhaseStr(phase)));
-	/*	httpRequest.setOpt<curlpp::options::Url>("http://localhost:8080/requestfirst");*/
 		httpRequest.setOpt(new curlpp::options::PostFields(data));
 		httpRequest.setOpt(new curlpp::options::PostFieldSize(data.size()));
 		if (verbose)
