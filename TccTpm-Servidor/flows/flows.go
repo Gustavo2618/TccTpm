@@ -22,15 +22,15 @@ func InitialChallenge(data structs.RequestData) (ec structs.ChallengeResponse, e
 		fmt.Println(">>>Error decoding public Ek", err)
 		return structs.ChallengeResponse{}, err
 	}
-	// EK, _ := ek.Key()
+
 	DatafromTpm.EK, _ = ek.Key()
-	fmt.Println(">>>EK: ", DatafromTpm.EK)
+	fmt.Printf("\n>>>EK: %x", DatafromTpm.EK)
 	//loading AK
 	akBytes := data.AkPublic
 	ak, err := tpm2.DecodePublic(akBytes)
 	DatafromTpm.AKPublicArea = ak
 	DatafromTpm.AK, _ = ak.Key()
-	fmt.Println(">>>AK: ", DatafromTpm.AK)
+	fmt.Printf("\n\n>>>AK: %x", DatafromTpm.AK)
 	if err != nil {
 		fmt.Println(">>>Error decoding public Ak", err)
 		return structs.ChallengeResponse{}, err
@@ -43,8 +43,8 @@ func InitialChallenge(data structs.RequestData) (ec structs.ChallengeResponse, e
 	//iniciando a geração do challenger
 	certifyBytes := data.Certify
 	certifySignatureBytes := data.CertifySignature
-	fmt.Printf(">>>CertifyBytes: %x\n ", certifyBytes)
-	fmt.Printf(">>>CertifySignatureBytes: %x\n ", certifySignatureBytes)
+	fmt.Printf("\n>>>Bytes de certificacao: %x\n", certifyBytes)
+	fmt.Printf("\n>>>Bytes de assinatura da certificacao: %x\n", certifySignatureBytes)
 
 	nonce, ec, err := verifier.VerifyCertify(DatafromTpm.EK, ak, certifyBytes, certifySignatureBytes)
 	if err != nil {
@@ -52,12 +52,11 @@ func InitialChallenge(data structs.RequestData) (ec structs.ChallengeResponse, e
 		return structs.ChallengeResponse{}, err
 	}
 	DatafromTpm.Secret = nonce
-	fmt.Printf("\n\n>>>Credential: %x\n\n", ec.Credential)
-	fmt.Printf("\n>>>Secret: %x\n\n", ec.EncryptedSecret)
+	fmt.Printf("\n\n>>>Credenciais: %x\n\n", ec.Credential)
+	fmt.Printf("\n>>>Segredo: %x\n\n", ec.EncryptedSecret)
 	fmt.Printf("\n>>>Nonce para o cliente: %x\n\n", nonce)
 
 	return ec, err
-
 }
 
 // verificação do secret enviado pelo cliente

@@ -22,11 +22,8 @@ func InitialCommunication(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	fmt.Println("--------------------------------------------------------------------------------------------------------------------------------------------------")
-	fmt.Println(requestData)
 
-	fmt.Println()
-	fmt.Println(">>>Keys recieved from client")
+	fmt.Println("\n>>>Chaves enviadas pelo o cliente:")
 
 	ec, err := flows.InitialChallenge(requestData.Data)
 	if err != nil {

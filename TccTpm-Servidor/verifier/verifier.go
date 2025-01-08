@@ -61,7 +61,7 @@ func VerifyCertify(ek crypto.PublicKey, ak tpm2.Public, certifydata []byte, cert
 }
 
 func VerifyAkProps(ak tpm2.Public) error {
-	fmt.Println(">>>Verificando propriedades da AK...")
+	fmt.Println("\n\n>>>Verificando propriedades da AK...")
 	props := ak.Attributes
 	if props&tpm2.FlagFixedTPM == 0 {
 		return fmt.Errorf("\n>>>A chave tem que ser fixada ao tpm")
@@ -71,14 +71,10 @@ func VerifyAkProps(ak tpm2.Public) error {
 		return fmt.Errorf("\n>>>A chave tem que ser restrita")
 	}
 	fmt.Println("\n>>>Flag Restricted ok.")
-	// if props&tpm2.FlagDecrypt == 0 {
-	// 	return fmt.Errorf("\n>>A chave nao pode ser decryptada")
-	// }
-	// fmt.Println("\n>>Flag not Decrypt ok.")
 	if props&tpm2.FlagSign == 0 {
 		return fmt.Errorf("\n>>>A chave te que ser de assinatura")
 	}
-	fmt.Println("\n>>>Flag de Assinatura ok.")
+	fmt.Printf("\n>>>Flag de Assinatura ok.\n")
 
 	return nil
 }

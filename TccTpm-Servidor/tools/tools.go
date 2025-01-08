@@ -15,7 +15,7 @@ func CheckSignature(pub tpm2.Public, attestData []byte, signature []byte) error 
 
 	key, ok := pubKey.(*rsa.PublicKey)
 	if ok {
-		fmt.Println(">>>É uma chave Publica RSA...")
+		fmt.Println("\n>>>É uma chave Publica RSA...")
 	}
 
 	sigScheme := pub.RSAParameters.Sign
