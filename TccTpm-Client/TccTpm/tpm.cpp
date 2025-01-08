@@ -69,7 +69,7 @@ namespace TccTpm {
 		}
 
 		//Enviando recoveredSecret para o server.
-		std::cout << "\n>>>RecoveredSecret: ";
+		std::cout << "\n>>>Segredo enviado pelo servidor: ";
 		printBytesHex(recoveredSecret);
 		std::cout << ">>>Processo de activate crendential finalizado com successo! "<<std::endl;
 		return recoveredSecret;
@@ -86,14 +86,14 @@ namespace TccTpm {
 			tempVec.insert(tempVec.end(), tpmdata.readingDigestFromPcrs.pcrValues[i].buffer.begin(), tpmdata.readingDigestFromPcrs.pcrValues[i].buffer.end());
 		}
 		
-		std::cout << "Digest dos pcr's: \n" << tpmdata.readingDigestFromPcrs.ToString() << std::endl;
+		std::cout << ">>>Digest dos pcr's: \n\n" << tpmdata.readingDigestFromPcrs.ToString() << std::endl;
 		tpmdata.quote = tpmdata.tpm._AllowErrors().Quote(tpmdata.akhandle, Nonce, TpmCpp::TPMS_NULL_SIG_SCHEME(), digestFromPcrs);
 	
 		if (tpmdata.tpm._GetLastResponseCode() != TpmCpp::TPM_RC::SUCCESS) {
 			std::cout << "Falha ao tentar criar o quote! " << TpmCpp::EnumToStr(tpmdata.tpm._GetLastResponseCode()) << std::endl;
 		}
 		std::cout << tpmdata.quote.ToString() << std::endl;
-		std::cout << "Sucesso ao criar Quote!" << std::endl;
+		std::cout << "\n>>>Sucesso ao criar Quote!" << std::endl;
 		std::shared_ptr<TpmCpp::TPMU_SIGNATURE> sharedPointerQuoteSignature = tpmdata.quote.signature;
 		TpmCpp::ByteVec quoteSignaturebytes = tpmdata.quote.signature->toBytes();
 	

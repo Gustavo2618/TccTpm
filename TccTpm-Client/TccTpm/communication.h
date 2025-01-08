@@ -5,4 +5,5 @@
 
 std::string communicationProofOfPossetion();
 TpmCpp::ByteVec communicationSendRecoveredSecretForAttestation(std::string& credentialFromServer, std::string& secretFromServer);
-void communicationSendQuoteForAttestation();
+
+bool communicationSendQuoteForAttestation();

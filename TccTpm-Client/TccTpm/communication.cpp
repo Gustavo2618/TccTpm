@@ -18,7 +18,7 @@ TpmCpp::ByteVec communicationSendRecoveredSecretForAttestation(std::string& cred
 	TpmCpp::ByteVec recoveredSecret = TccTpm::processActivateCredential(credentialFromServer, secretFromServer);
 	std::cout << std::endl << std::endl;
 	std::string secretToSend = base64Encode(recoveredSecret,true);
-	std::cout << ">>>Secret encoded to send for server: " + secretToSend << std::endl;
+	std::cout << ">>>Secret encodado para enviar ao servidor: " + secretToSend << std::endl;
 	std::string jsonSecret = JsonSendRecoveredSecret(secretToSend);
 	std::cout << "\n" + jsonSecret << std::endl;
 	std::string responseSecretFromServer = makeRequest(ProcessPhase::SECRET_CHECK_FOR_ATTESTATION, jsonSecret, false);
@@ -33,9 +33,16 @@ TpmCpp::ByteVec communicationSendRecoveredSecretForAttestation(std::string& cred
 	}
 	return newNonce;
 }
-void communicationSendQuoteForAttestation() {
+bool communicationSendQuoteForAttestation() {
 	std::string jsonQuoteToSend = JsonSendQuote(tpmdata.quoteForServer, tpmdata.encodedPCRS, tpmdata.encodedSignatureQuote);
-	std::cout << "\nQuote e pcrs encodados que vão para o servidor: " + jsonQuoteToSend << std::endl;
+	std::cout << "\n>>>Quote e pcrs encodados que vao para o servidor: " + jsonQuoteToSend << std::endl;
 	std::string responseQuoteFromServer = makeRequest(ProcessPhase::RESULT_ATTESTATION, jsonQuoteToSend, false);
-	std::cout << responseQuoteFromServer << std::endl;
+	if (responseQuoteFromServer == "true") {
+		return true;
+	}
+	else (responseQuoteFromServer == "false");{
+		return false;
+		
+	}
+	
 }
