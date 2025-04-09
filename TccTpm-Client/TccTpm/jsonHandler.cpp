@@ -5,6 +5,7 @@
 #include "structs.h"
 
 extern TpmData tpmdata;
+//Json que manda os dados da prova de posse.
 std::string JsonSendProofOfPossetion(std::string& ekPubContent, std::string& akPubContent, std::string& certify, std::string& certifySignature) {
 	Json::FastWriter jsonWriter;
 	Json::Value jsonRoot;
